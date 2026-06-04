@@ -26,10 +26,9 @@ h1{
 
 .dashboard{
     display:flex;
+    flex-wrap:wrap;
     gap:10px;
-    margin-bottom:20px;
 }
-
 .card{
     flex:1;
     background:white;
@@ -137,6 +136,7 @@ li{
 <div class="card">
 <h3>Pending</h3>
 <h2 id="pendingTasks">0</h2>
+</div>
 
 <div class="card">
 <h3>Score</h3>
@@ -311,6 +311,7 @@ function updateDashboard(){
         feedbackElement.innerText =
         feedback;
     }
+}
 </script>
 
 </body>
