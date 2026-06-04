@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daily Planner</title>
+<title>Smart Daily Planner</title>
 
 <style>
+
 body{
     font-family: Arial, sans-serif;
-    background:#f4f4f4;
+    background:#f4f6f9;
     margin:0;
     padding:20px;
 }
 
 .container{
-    max-width:700px;
+    max-width:800px;
     margin:auto;
 }
 
@@ -23,21 +24,53 @@ h1{
     color:#333;
 }
 
+.dashboard{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
 .card{
+    flex:1;
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    text-align:center;
+    box-shadow:0px 2px 8px rgba(0,0,0,0.1);
+}
+
+.card h2{
+    margin:0;
+    color:#4CAF50;
+}
+
+.planner{
     background:white;
     padding:20px;
     border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    box-shadow:0px 2px 8px rgba(0,0,0,0.1);
+}
+
+input,select{
+    padding:10px;
+    margin:5px;
 }
 
 input{
-    width:75%;
-    padding:10px;
+    width:50%;
 }
 
 button{
     padding:10px 15px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:5px;
     cursor:pointer;
+}
+
+button:hover{
+    background:#45a049;
 }
 
 ul{
@@ -46,69 +79,157 @@ ul{
 }
 
 li{
-    background:#f9f9f9;
-    margin-top:10px;
-    padding:10px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    border-radius:5px;
+    background:#f9f9f9;
+    margin-top:10px;
+    padding:12px;
+    border-radius:8px;
 }
 
 .completed{
     text-decoration:line-through;
     color:gray;
 }
-</style>
 
+.high{
+    border-left:6px solid red;
+}
+
+.medium{
+    border-left:6px solid orange;
+}
+
+.low{
+    border-left:6px solid green;
+}
+
+.task-text{
+    cursor:pointer;
+}
+
+.delete-btn{
+    background:red;
+}
+
+</style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1>Daily Planner</h1>
 
-    <div class="card">
-        <input type="text" id="taskInput" placeholder="Enter Task">
-        <button onclick="addTask()">Add</button>
+<h1>📅 Smart Daily Planner</h1>
 
-        <ul id="taskList"></ul>
-    </div>
+<div class="dashboard">
+
+<div class="card">
+<h3>Total</h3>
+<h2 id="totalTasks">0</h2>
+</div>
+
+<div class="card">
+<h3>Completed</h3>
+<h2 id="completedTasks">0</h2>
+</div>
+
+<div class="card">
+<h3>Pending</h3>
+<h2 id="pendingTasks">0</h2>
+</div>
+
+</div>
+
+<div class="planner">
+
+<input type="text" id="taskInput" placeholder="Enter Task">
+
+<select id="priority">
+<option value="high">🔴 High</option>
+<option value="medium">🟠 Medium</option>
+<option value="low">🟢 Low</option>
+</select>
+
+<button onclick="addTask()">Add Task</button>
+
+<ul id="taskList"></ul>
+
+</div>
+
 </div>
 
 <script>
 
 function addTask(){
 
-    let taskInput = document.getElementById("taskInput");
-    let taskText = taskInput.value;
+    let taskInput=document.getElementById("taskInput");
+    let taskText=taskInput.value;
+
+    let priority=document.getElementById("priority").value;
 
     if(taskText===""){
         alert("Please enter a task");
         return;
     }
 
-    let li = document.createElement("li");
+    let li=document.createElement("li");
 
-    li.innerHTML = `
-        <span onclick="toggleTask(this)">
-            ${taskText}
+    li.classList.add(priority);
+
+    li.innerHTML=`
+        <span class="task-text"
+        onclick="toggleTask(this)">
+        ${taskText}
+        (${priority.toUpperCase()})
         </span>
-        <button onclick="deleteTask(this)">
-            Delete
+
+        <button class="delete-btn"
+        onclick="deleteTask(this)">
+        Delete
         </button>
     `;
 
-    document.getElementById("taskList").appendChild(li);
+    document.getElementById("taskList")
+    .appendChild(li);
 
     taskInput.value="";
+
+    updateDashboard();
 }
 
 function toggleTask(element){
+
     element.classList.toggle("completed");
+
+    updateDashboard();
 }
 
 function deleteTask(button){
+
     button.parentElement.remove();
+
+    updateDashboard();
+}
+
+function updateDashboard(){
+
+    let total=
+    document.querySelectorAll("#taskList li").length;
+
+    let completed=
+    document.querySelectorAll(".completed").length;
+
+    let pending=total-completed;
+
+    document.getElementById("totalTasks")
+    .innerText=total;
+
+    document.getElementById("completedTasks")
+    .innerText=completed;
+
+    document.getElementById("pendingTasks")
+    .innerText=pending;
 }
 
 </script>
