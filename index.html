@@ -137,6 +137,16 @@ li{
 <div class="card">
 <h3>Pending</h3>
 <h2 id="pendingTasks">0</h2>
+
+<div class="card">
+<h3>Score</h3>
+<h2 id="score">0%</h2>
+</div>
+
+<div class="card">
+<h3>Feedback</h3>
+<h2 id="feedback">Start 🚀</h2>
+</div>
 </div>
 
 </div>
@@ -159,25 +169,52 @@ li{
 
 </div>
 
+
 <script>
+
+function saveTasks(){
+    localStorage.setItem(
+        "plannerData",
+        document.getElementById("taskList").innerHTML
+    );
+}
+
+function loadTasks(){
+
+    let saved =
+    localStorage.getItem("plannerData");
+
+    if(saved){
+        document.getElementById("taskList").innerHTML = saved;
+    }
+
+    updateDashboard();
+}
+
+window.onload = loadTasks;
 
 function addTask(){
 
-    let taskInput=document.getElementById("taskInput");
-    let taskText=taskInput.value;
+    let taskInput =
+    document.getElementById("taskInput");
 
-    let priority=document.getElementById("priority").value;
+    let taskText =
+    taskInput.value;
+
+    let priority =
+    document.getElementById("priority").value;
 
     if(taskText===""){
         alert("Please enter a task");
         return;
     }
 
-    let li=document.createElement("li");
+    let li =
+    document.createElement("li");
 
     li.classList.add(priority);
 
-    li.innerHTML=`
+    li.innerHTML = `
         <span class="task-text"
         onclick="toggleTask(this)">
         ${taskText}
@@ -190,12 +227,14 @@ function addTask(){
         </button>
     `;
 
-    document.getElementById("taskList")
+    document
+    .getElementById("taskList")
     .appendChild(li);
 
     taskInput.value="";
 
     updateDashboard();
+    saveTasks();
 }
 
 function toggleTask(element){
@@ -203,6 +242,7 @@ function toggleTask(element){
     element.classList.toggle("completed");
 
     updateDashboard();
+    saveTasks();
 }
 
 function deleteTask(button){
@@ -210,28 +250,67 @@ function deleteTask(button){
     button.parentElement.remove();
 
     updateDashboard();
+    saveTasks();
 }
 
 function updateDashboard(){
 
-    let total=
+    let total =
     document.querySelectorAll("#taskList li").length;
 
-    let completed=
+    let completed =
     document.querySelectorAll(".completed").length;
 
-    let pending=total-completed;
+    let pending =
+    total - completed;
 
     document.getElementById("totalTasks")
-    .innerText=total;
+    .innerText = total;
 
     document.getElementById("completedTasks")
-    .innerText=completed;
+    .innerText = completed;
 
     document.getElementById("pendingTasks")
-    .innerText=pending;
-}
+    .innerText = pending;
 
+    let score = 0;
+
+    if(total > 0){
+        score = Math.round(
+            (completed / total) * 100
+        );
+    }
+
+    let scoreElement =
+    document.getElementById("score");
+
+    if(scoreElement){
+        scoreElement.innerText =
+        score + "%";
+    }
+
+    let feedback = "";
+
+    if(score >= 80){
+        feedback = "Excellent 🎉";
+    }
+    else if(score >= 50){
+        feedback = "Good Progress 👍";
+    }
+    else if(score > 0){
+        feedback = "Keep Going 💪";
+    }
+    else{
+        feedback = "Start Planning 🚀";
+    }
+
+    let feedbackElement =
+    document.getElementById("feedback");
+
+    if(feedbackElement){
+        feedbackElement.innerText =
+        feedback;
+    }
 </script>
 
 </body>
